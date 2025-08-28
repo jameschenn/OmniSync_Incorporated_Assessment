@@ -11,7 +11,8 @@ type CardData = {
 
 function App() {
 
-  const [ cards, setCards ] = useState<CardData[]>(() => {
+  const createInitializeCards = (): CardData[] => {
+    
     const initializeCards: CardData[] = [];
 
     for(let i = 1; i <= 8; i++) {
@@ -22,12 +23,16 @@ function App() {
       });
     };
       return initializeCards;
-  });
+  }
 
+  const [ activeSort, setActiveSort ] = useState<string>("default");
+  const [ cards, setCards ] = useState<CardData[]>(createInitializeCards);
+
+  
   const handleClick = (id: number) => {
     console.log(`Card ${id} clicked`);
 
-    let updatedCards = [...cards];
+    let updatedCards: CardData[] = [...cards];
 
     for(let i = 0; i < updatedCards.length; i++) {
       let card = updatedCards[i];
@@ -51,6 +56,43 @@ function App() {
     {value: "last_clicked", label: "Last Clicked ➡️ First Clicked"},
   ];
 
+  const handleSort = (method: string) => {
+    
+    const sortedCards: CardData[] = [...cards];
+    
+    setActiveSort(method);
+    switch(method) {
+      case "most_clicks":
+        sortedCards.sort((a, b) => b.clicks - a.clicks);
+        break;
+      case "least_clicks":
+        sortedCards.sort((a, b) => a.clicks - b.clicks);
+        break;
+      case "first_clicked":
+        sortedCards.sort((a, b) => {
+          if(!a.firstClick) return 1;
+          if(!b.firstClick) return -1;
+          return new Date(a.firstClick).getTime() - new Date(b.firstClick).getTime();
+        });
+        break;
+      case "last_clicked":
+        sortedCards.sort((a, b) => {
+          if(!a.firstClick) return 1;
+          if(!b.firstClick) return -1;
+          return new Date(b.firstClick).getTime() - new Date(a.firstClick).getTime();
+        });
+        break;
+      default:
+        sortedCards.sort((a, b) => a.id - b.id);
+    }
+    setCards(sortedCards);
+  }
+
+  const handleClear = () => {
+    setActiveSort("default");
+    setCards(createInitializeCards());
+  }
+
   return (
     <>
       <p>Hi. In Progress. Thanks for checking this commit :D</p>
@@ -61,13 +103,13 @@ function App() {
             <FilterButton 
               key={option.value}
               label={option.label}
-              active={true}
-              onClick={() => console.log('placeholder')}
+              active={activeSort === option.value}
+              onClick={() => handleSort(option.value)}
             />
           ))}
           <FilterButton
             label="Clear"
-            onClick={() => console.log('i am going to clear everything.... eventually')}
+            onClick={handleClear}
           />
         </div>
       </div>
