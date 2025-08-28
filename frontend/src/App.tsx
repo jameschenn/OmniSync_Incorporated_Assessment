@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Card from './components/card/Card';
+import FilterButton from './components/buttons/filterButton';
 import './styles/globals.scss';
 
 type CardData = {
@@ -42,9 +43,34 @@ function App() {
     setCards(updatedCards);
   }
 
+  const sortOptions = [
+    {value: "default", label: "Default"},
+    {value: "most_clicks", label: "Most Clicks"},
+    {value: "least_clicks", label: "Least Clicks"},
+    {value: "first_clicked", label: "First Clicked ➡️ Last Clicked"},
+    {value: "last_clicked", label: "Last Clicked ➡️ First Clicked"},
+  ];
+
   return (
     <>
       <p>Hi. In Progress. Thanks for checking this commit :D</p>
+
+      <div>
+        <div>
+          {sortOptions.map((option: { value:string, label:string }) => (
+            <FilterButton 
+              key={option.value}
+              label={option.label}
+              active={true}
+              onClick={() => console.log('placeholder')}
+            />
+          ))}
+          <FilterButton
+            label="Clear"
+            onClick={() => console.log('i am going to clear everything.... eventually')}
+          />
+        </div>
+      </div>
 
       <div className="grid">
         {cards.map((card: CardData) => (
