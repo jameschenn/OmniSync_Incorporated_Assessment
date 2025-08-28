@@ -5,11 +5,12 @@ type CardProps = {
     number: number;
     clicks: number;
     firstClick: string | null;
+    onClick: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ number, clicks, firstClick }: CardProps) => {
+const Card: React.FC<CardProps> = ({ number, clicks, firstClick, onClick }: CardProps) => {
     return (
-        <div className={styles.card}>
+        <div className={styles.card} onClick={onClick}>
             <p>{ number }</p>
             <p>Clicks: { clicks }</p>
             <p>{ firstClick ? `First Click: ${firstClick}` : "Not Clicked Yet" }</p>
