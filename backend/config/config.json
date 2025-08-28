@@ -1,9 +1,0 @@
-{
-  "development": {
-    "username": "postgres",
-    "password": "postgres",
-    "database": "omnisync_assessment",
-    "host": "postgres",
-    "dialect": "postgres"
-  }
-}
