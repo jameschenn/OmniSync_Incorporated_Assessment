@@ -13,7 +13,7 @@ const Card: React.FC<CardProps> = ({ number, clicks, firstClick, onClick }: Card
         <div className={styles.card} onClick={onClick}>
             <p>{ number }</p>
             <p>Clicks: { clicks }</p>
-            <p>{ firstClick ? `First Click: ${firstClick}` : "Not Clicked Yet" }</p>
+            <p>{firstClick ? `First Click: ${new Date(firstClick).toLocaleString()}` : "Never Clicked"}</p>
         </div>
     );
 }

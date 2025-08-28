@@ -23,6 +23,25 @@ function App() {
       return initializeCards;
   });
 
+  const handleClick = (id: number) => {
+    console.log(`Card ${id} clicked`);
+
+    let updatedCards = [...cards];
+
+    for(let i = 0; i < updatedCards.length; i++) {
+      let card = updatedCards[i];
+      if(card.id === id) {
+        updatedCards[i] = {
+          ...card,
+          clicks: card.clicks + 1,
+          firstClick: card.firstClick ?? new Date().toISOString(),
+        };
+        break;
+      }
+    }
+    setCards(updatedCards);
+  }
+
   return (
     <>
       <p>Hi. In Progress. Thanks for checking this commit :D</p>
@@ -34,7 +53,7 @@ function App() {
             number={card.id}
             clicks={card.clicks}
             firstClick={card.firstClick}
-            onClick={() => console.log("Placeholder")}
+            onClick={() => handleClick(card.id)}
           />
         ))}
       </div>  
