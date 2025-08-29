@@ -5,7 +5,9 @@ export const getAllCards = async (_req: Request, res: Response): Promise<void> =
     try {
         const { rows } = await pool.query(`
             SELECT * FROM "Cards"
-            ORDER BY id ASC;
+            ORDER BY 
+                CASE WHEN "firstClick" IS NULL THEN 1 ELSE 0 END,
+                "firstClick" ASC;
         `);
         res.status(200).json(rows);
     } catch (err) {
