@@ -11,20 +11,6 @@ type CardData = {
 
 function App() {
 
-  // const createInitializeCards = (): CardData[] => {
-    
-  //   const initializeCards: CardData[] = [];
-
-  //   for(let i = 1; i <= 8; i++) {
-  //     initializeCards.push({
-  //       id: i,
-  //       clicks: 0,
-  //       firstClick: null
-  //     });
-  //   };
-  //     return initializeCards;
-  // }
-
   const API_BASE = "http://localhost:5050";
   
   const [ cards, setCards ] = useState<CardData[]>([]);
@@ -40,23 +26,22 @@ function App() {
     fetchCards();
   }, []);
   
-  const handleClick = (id: number) => {
-    console.log(`Card ${id} clicked`);
+  const handleClick = async (id: number) => {
+    try {
+      const res = await fetch(`${API_BASE}/cards/${id}/click`, {
+        method: "POST"
+      });
+      const updatedCard: CardData = await res.json();
 
-    let updatedCards: CardData[] = [...cards];
+      setCards(prevCards =>
+        prevCards.map(card =>
+          card.id === updatedCard.id ? updatedCard : card
+        )
+      );
 
-    for(let i = 0; i < updatedCards.length; i++) {
-      let card = updatedCards[i];
-      if(card.id === id) {
-        updatedCards[i] = {
-          ...card,
-          clicks: card.clicks + 1,
-          firstClick: card.firstClick ?? new Date().toISOString(),
-        };
-        break;
-      }
+    } catch(err) {
+      console.error('Failed to update card from the frontend:', err);
     }
-    setCards(updatedCards);
   }
 
   const sortOptions = [
@@ -99,9 +84,26 @@ function App() {
     setCards(sortedCards);
   }
 
-  const handleClear = () => {
-    setActiveSort("default");
-    setCards(createInitializeCards());
+  const handleClear = async () => {
+    
+    try {
+      const res = await fetch(`${API_BASE}/cards/clear`, {
+        method: "POST"
+      });
+      const clearedCards: CardData[] = await res.json();
+      
+      //failsafe in case we don't get expected array
+      if(!Array.isArray(clearedCards)) {
+        console.error("Unexpected data type", clearedCards);
+        return;
+      }
+      
+      setCards(clearedCards);
+      setActiveSort("default");
+    
+    } catch(err) {
+      console.error("Failed to clear cards from the frontend:", err);
+    }
   }
 
   return (
