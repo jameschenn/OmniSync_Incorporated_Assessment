@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Card from './components/card/Card';
 import FilterButton from './components/buttons/filterButton';
 import './styles/globals.scss';
@@ -11,23 +11,34 @@ type CardData = {
 
 function App() {
 
-  const createInitializeCards = (): CardData[] => {
+  // const createInitializeCards = (): CardData[] => {
     
-    const initializeCards: CardData[] = [];
+  //   const initializeCards: CardData[] = [];
 
-    for(let i = 1; i <= 8; i++) {
-      initializeCards.push({
-        id: i,
-        clicks: 0,
-        firstClick: null
-      });
-    };
-      return initializeCards;
+  //   for(let i = 1; i <= 8; i++) {
+  //     initializeCards.push({
+  //       id: i,
+  //       clicks: 0,
+  //       firstClick: null
+  //     });
+  //   };
+  //     return initializeCards;
+  // }
+
+  const API_BASE = "http://localhost:5050";
+  
+  const [ cards, setCards ] = useState<CardData[]>([]);
+  const [ activeSort, setActiveSort ] = useState<string>("default");
+  
+  const fetchCards = async () => {
+    const res = await fetch(`${API_BASE}/cards`);
+    const data: CardData[] = await res.json();
+    setCards(data);
   }
 
-  const [ activeSort, setActiveSort ] = useState<string>("default");
-  const [ cards, setCards ] = useState<CardData[]>(createInitializeCards);
-
+  useEffect(() => {
+    fetchCards();
+  }, []);
   
   const handleClick = (id: number) => {
     console.log(`Card ${id} clicked`);
