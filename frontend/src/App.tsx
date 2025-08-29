@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion} from 'framer-motion';
 import Card from './components/card/Card';
-import FilterButton from './components/buttons/filterButton';
+import FilterButton from './components/buttons/FilterButton';
+import ThemeToggle from './components/toggles/themeToggle';
 import './styles/globals.scss';
 
 type CardData = {
@@ -25,6 +27,21 @@ function App() {
   useEffect(() => {
     fetchCards();
   }, []);
+
+  const prefersReducedMotion = useReducedMotion();
+
+  const transition = prefersReducedMotion
+    ? { duration: 0 }
+    : { duration: 0.25, ease: 'easeInOut' as any };
+
+  const enter = prefersReducedMotion
+    ? { opacity: 1, scale: 1 }
+    : { opacity: 1, scale: 1 };
+
+  const exit = prefersReducedMotion
+    ? { opacity: 1, scale: 1 }
+    : { opacity: 0, scale: 0.95 };
+
   
   const handleClick = async (id: number) => {
     try {
@@ -47,9 +64,9 @@ function App() {
   const sortOptions = [
     {value: "default", label: "Default"},
     {value: "most_clicks", label: "Most Clicks"},
-    {value: "least_clicks", label: "Least Clicks"},
+    // {value: "least_clicks", label: "Least Clicks"},
     {value: "first_clicked", label: "First Clicked ➡️ Last Clicked"},
-    {value: "last_clicked", label: "Last Clicked ➡️ First Clicked"},
+    // {value: "last_clicked", label: "Last Clicked ➡️ First Clicked"},
   ];
 
   const handleSort = (method: string) => {
@@ -97,10 +114,11 @@ function App() {
         console.error("Unexpected data type", clearedCards);
         return;
       }
-      
-      setCards(clearedCards);
+      const defaultOrderCards = clearedCards.sort((a, b) => a.id - b.id);
+
+      setCards(defaultOrderCards);
       setActiveSort("default");
-    
+
     } catch(err) {
       console.error("Failed to clear cards from the frontend:", err);
     }
@@ -108,9 +126,8 @@ function App() {
 
   return (
     <>
-      <p>Hi. In Progress. Thanks for checking this commit :D</p>
-
-      <div>
+    <header><ThemeToggle initialTheme='dark' /></header>
+      <div className='filter-container'>
         <div>
           {sortOptions.map((option: { value:string, label:string }) => (
             <FilterButton 
@@ -128,15 +145,25 @@ function App() {
       </div>
 
       <div className="grid">
-        {cards.map((card: CardData) => (
-          <Card 
-            key={card.id}
-            number={card.id}
-            clicks={card.clicks}
-            firstClick={card.firstClick}
-            onClick={() => handleClick(card.id)}
-          />
-        ))}
+        <AnimatePresence>
+          {cards.map((card) => (
+            <motion.div
+              key={card.id}
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={enter}
+              exit={exit}
+              transition={transition}
+            >
+              <Card
+                number={card.id}
+                clicks={card.clicks}
+                firstClick={card.firstClick}
+                onClick={() => handleClick(card.id)}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>  
     </>
   )
