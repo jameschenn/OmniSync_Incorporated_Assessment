@@ -6,12 +6,12 @@ export const getAllCards = async (_req: Request, res: Response): Promise<void> =
         const { rows } = await pool.query(`
             SELECT * FROM "Cards"
             ORDER BY 
-                CASE WHEN "firstClick" IS NULL THEN 1 ELSE 0 END,
-                "firstClick" ASC;
+                "firstClick" ASC NULLS LAST,
+                "id" ASC;
         `);
         res.status(200).json(rows);
     } catch (err) {
-        console.error("Error fecthing cards:", err);
+        console.error("Error fetching cards:", err);
         res.status(500).json({ error: "Failed to fetch cards on the backend" })
     }
 };

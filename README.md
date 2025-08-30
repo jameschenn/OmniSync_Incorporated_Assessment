@@ -51,7 +51,7 @@ Light/Dark mode toggle and card animations on click/reorder using Framer Motion 
 ```bash
 git clone https://github.com/jameschenn/OmniSync_Incorporated_Assessment.git
 ```
-2. Navigate to project root
+2. Navigate to the project root (if not already in it):
 ```bash
 cd OmniSync_Incorporated_Assessment
 ```
@@ -91,7 +91,7 @@ docker-compose down
 ### Design & Implementation Decisions
 - Kept the stack lightweight and easy to maintain due to simplicity of project outline. 
 - Stored clicks directly in the database to keep data consistent for all users while choosing only to sort cards on the frontend.  
-- Chose a consistent timestamp format for accurate tracking and comparison, and ethen formatted for user readability on the UI.”
+- Chose a consistent timestamp format for accurate tracking and comparison, and then formatted for user readability on the UI.”
 - Added subtle animations with Framer Motion for users to easily visualize responsive sorting.  
 
 ## API Routes
