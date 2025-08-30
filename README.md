@@ -1,119 +1,3 @@
-
-# Requirements
-
-## Frontend Requirements
-
-Display eight cards, numbered 1 through 8, laid out in a 2x4 grid.
-
-Each card should:
-
-- Show its number, centered.
-- Display the total number of clicks it has received.
-- Display the timestamp of its first click.
-
-Clicking a card should:
-
-- Only register the first click for order tracking.
-- Always increment its click counter.
-- Save all click data to the PostgreSQL database.
-
-Implement sorting options for the cards:
-
-- Most clicks → Fewest clicks
-- First clicked → Last clicked
-
-Include a **Clear** button that:
-
-- Resets card order to original (1 → 8).
-- Resets all click counts and timestamps.
-- Reflects these changes both in the UI and the database.
-
-The layout should be responsive for mobile.
-
----
-
-## Backend + Database Requirements
-
-Use PostgreSQL to store:
-
-- Click count for each card.
-- First click timestamp.
-
-On page load, read from the database to:
-
-- Determine the card order (based on first click timestamp).
-- Display click count and first-click timestamp.
-
-Provide necessary API routes to:
-
-- Read, write, and update click data.
-- Reset the database state when the Clear button is pressed.
-
----
-
-## Dockerization
-
-Include a `Dockerfile` and `docker-compose.yml` file that:
-
-- Spins up both the frontend and backend services.
-- Starts a local PostgreSQL instance with a seeded schema/table for the card data.
-
-Make sure the app can be launched with a single `docker-compose up` command.
-
----
-
-## Tech Stack
-
-You are expected to use the following stack:
-
-- **Frontend**: React + TypeScript
-- **Backend**: Node.js with Express (or any similar framework) _or_ Next.js for fullstack  
-  _(whichever you choose, use TypeScript here as well)_
-- **Database**: PostgreSQL
-- **Styling**: Your choice (CSS Modules, Tailwind, MUI, etc.)
-- **Deployment**: Docker
-
----
-
-## Evaluation Criteria
-
-We will evaluate your submission based on:
-
-- Code organization and clarity
-- Use of TypeScript types
-- Database integration and API design
-- UI functionality (click tracking, sorting, resetting)
-- Docker setup and ease of running the app locally
-- Git usage (atomic commits, meaningful messages)
-- Documentation quality
-
----
-
-## Submission Instructions
-
-1. Create a **public GitHub repository** with your completed project.
-2. Include a `README.md` file that contains:
-   - Instructions for running the project locally.
-   - Brief notes on which parts of the task were:
-     - Familiar/easy
-     - New or challenging
-   - Any design or implementation decisions you think need clarification.
-3. Make sure your Git history shows your development process  
-   _(i.e., don’t just upload a zip file)_.
-4. Share the GitHub repository link with us.
-
----
-
-## Bonus Ideas (Optional)
-
-If you complete the core task early and want to go further:
-
-- Add a **dark mode** toggle.
-- Add **animations** when cards are clicked or reordered.
-
-
-
-
 # OmniSync Incorporated - Fullstack Web Developer Assessment
 
 ## Overview
@@ -136,7 +20,7 @@ First clicked → Last clicked
 
 Resets card order, click counts, and timestamps in the database.
 
-**Optional Enhancements**: 
+**Enhancements (Beyond MVP)**: 
 
 Light/Dark mode toggle and card animations on click/reorder using Framer Motion implemented.
 
@@ -163,7 +47,7 @@ Light/Dark mode toggle and card animations on click/reorder using Framer Motion 
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 ## How to Run
-1. Clone this repository (only this branch)
+1. Clone this repository
 ```bash
 git clone https://github.com/jameschenn/OmniSync_Incorporated_Assessment.git
 ```
@@ -171,7 +55,7 @@ git clone https://github.com/jameschenn/OmniSync_Incorporated_Assessment.git
 ```bash
 cd OmniSync_Incorporated_Assessment
 ```
-3. Run docker to build and start the app
+3. Build and start the app using Docker
 ```bash
 docker-compose up --build
 ```
@@ -193,26 +77,38 @@ docker-compose down
 
 ## Development Notes
 
-Familiar / Easy: React component structure, API calls, PostgreSQL CRUD
+### Familiar / Easy
+- Building and organizing React components for proper data flow and reusability.  
+- Building out RESTful APIs in Express performing CRUD operations.   
+- Designing the PostgreSQL schema for simple, efficient storage of clicks and timestamps.
 
-Challenging: Maintaining click/timestamp persistence, sorting while keeping DB in sync, Dockerizing multi-service stack
+### New / Challenging
+- Gained hands-on experience with Docker by containerizing the frontend, backend, and database into a smooth single-command deployment using docker-compose.
+- Writing raw SQL scripts for seeding and migrations instead of relying on an ORM like Sequelize.
+- Using CSS Grid for layout instead of my usual Flexbox approach  
 
-Design Decisions:
 
-Used Framer Motion for subtle card animations
+### Design & Implementation Decisions
+- Kept the stack lightweight and easy to maintain due to simplicity of project outline. 
+- Stored clicks directly in the database to keep data consistent for all users while choosing only to sort cards on the frontend.  
+- Chose a consistent timestamp format for accurate tracking and comparison, and ethen formatted for user readability on the UI.”
+- Added subtle animations with Framer Motion for users to easily visualize responsive sorting.  
 
-Lightweight state management (e.g., Zustand)
+## API Routes
 
-ISO string timestamps for first-click
+| Method | Endpoint            | Description                                              |
+|--------|-------------------|----------------------------------------------------------|
+| GET    | `/cards`           | Fetch all cards. |
+| POST   | `/cards/:id/click` | Increment the click count for specific card. Saves "firstClick" timestamp only on the first click. |
+| POST   | `/cards/clear`     | Reset all cards. |
 
-Sorting applied on frontend after fetching data
 
-Git Practices
+## Database Schema
 
-Atomic commits with descriptive messages
+**Table:** `Cards`
 
-Git history reflects development process (no zip uploads)
-
-Repository
-
-GitHub: [Insert link here]
+| Column      | Type       | Description                                  |
+|------------|-----------|----------------------------------------------|
+| `id`       | SERIAL    | Primary key, card number (1–8).            |
+| `clicks`   | INT       | Number of times the card has been clicked. |
+| `firstClick` | TIMESTAMP | Timestamp of the first click. NULL if never clicked. |

@@ -16,7 +16,7 @@ function App() {
   const API_BASE = "http://localhost:5050";
   
   const [ cards, setCards ] = useState<CardData[]>([]);
-  const [ activeSort, setActiveSort ] = useState<string>("default");
+  const [ activeSort, setActiveSort ] = useState<string | null>(null);
   
   const fetchCards = async () => {
     const res = await fetch(`${API_BASE}/cards`);
